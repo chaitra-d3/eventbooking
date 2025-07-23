@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Booking Ticket</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #8e44ad, #6c5ce7);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .ticket-box {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.15));
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .ticket-box h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .detail {
+      background: rgba(255,255,255,0.1);
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: #7bed9f;
+      font-size: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticket-box">
+    <h2>🎫 Your Booking Ticket</h2>
+    <div class="detail"><strong>Name:</strong> <span id="name"></span></div>
+    <div class="detail"><strong>Event:</strong> <span id="event"></span></div>
+    <div class="detail"><strong>Venue:</strong> <span id="venue"></span></div>
+    <div class="detail"><strong>Booking ID:</strong> <span id="bookingId"></span></div>
+    <div class="detail"><strong>WhatsApp:</strong> <span id="phone"></span></div>
+    <div class="success">✅ A confirmation has been sent to your WhatsApp number.</div>
+  </div>
+
+  <script>
+    const booking = JSON.parse(localStorage.getItem("booking"));
+    if (!booking) {
+      // No booking data, redirect to dashboard
+      window.location.href = "index.html";
+    }
+
+    const events = {
+      "musicfiesta": { name: "Music Fiesta", venue: "Grand Arena" },
+      "techsummit": { name: "Tech Summit 2025", venue: "Convention Center" },
+      "artexpo": { name: "Art Expo", venue: "City Gallery" },
+      "foodcarnival": { name: "Food Carnival", venue: "Open Grounds" }
+    };
+
+    const eventInfo = events[booking.eventId] || { name: "Unknown Event", venue: "N/A" };
+    const bookingId = "EVT" + Math.floor(Math.random() * 900000 + 100000);
+
+    document.getElementById("name").textContent = booking.name;
+    document.getElementById("event").textContent = eventInfo.name;
+    document.getElementById("venue").textContent = eventInfo.venue;
+    document.getElementById("bookingId").textContent = bookingId;
+    document.getElementById("phone").textContent = booking.whatsapp;
+
+    // Prepare ticket to save in booked events
+    const ticket = {
+      name: booking.name,
+      phone: booking.whatsapp,
+      event: eventInfo.name,
+      venue: eventInfo.venue,
+      bookingId,
+      date: new Date().toISOString()
+    };
+
+    // Save to booked events array in localStorage
+    const previous = JSON.parse(localStorage.getItem("bookedEvents")) || [];
+    previous.push(ticket);
+    localStorage.setItem("bookedEvents", JSON.stringify(previous));
+
+    // Simulate sending ticket to WhatsApp (replace with real integration if needed)
+    console.log("Sending ticket to WhatsApp:", ticket);
+
+    // Redirect to dashboard after 5 seconds
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 5000);
+  </script>
+</body>
+</html>
